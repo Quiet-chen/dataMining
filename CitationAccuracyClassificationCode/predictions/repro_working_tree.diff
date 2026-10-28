@@ -1,0 +1,61 @@
+diff --git a/CitationAccuracyClassificationCode/multivers/data_train.py b/CitationAccuracyClassificationCode/multivers/data_train.py
+index 76a4e68ec..6cefe645b 100644
+--- a/CitationAccuracyClassificationCode/multivers/data_train.py
++++ b/CitationAccuracyClassificationCode/multivers/data_train.py
+@@ -187,12 +187,10 @@ class SciFactDataset(Dataset):
+             for this_rationale in rationales:
+                 rationale_sets[torch.tensor(this_rationale)] = rationale_id
+                 rationale_id += 1
+-            print(rationales, claim)
+         else:
+             # If it's not an evidence document, the label is `NEI` and
+             # none of the sentences are evidence.
+             rationale_sets = torch.zeros(len(sentences), dtype=torch.int64)
+-            print(rationales, claim)
+ 
+         rationale = (rationale_sets > 0).int()
+         # `rationale_sets` has a separate int ID for each rationale.
+@@ -721,10 +719,15 @@ class ConcatDataModule(LightningDataModule):
+                 # Re-weight so that supports and refutes are even, but don't
+                 # downweight the NEI's,
+                 labels = [x["to_tensorize"]["label"] for x in entries]
++                # reindex keeps all 3 classes even if a (debug) subset has no
++                # instance of one of them; the original .loc raised KeyError.
+                 label_counts = (
+-                    pd.Series(labels).value_counts().loc[["NOT_ACCURATE", "ACCURATE", "NOT ENOUGH INFO"]]
++                    pd.Series(labels)
++                    .value_counts()
++                    .reindex(["NOT_ACCURATE", "ACCURATE", "NOT ENOUGH INFO"], fill_value=0)
++                    .clip(lower=1)
+                 )
+-                
++
+                 max_label_count = label_counts.max()
+                 label_weights = max_label_count / label_counts
+                 for entry in entries:
+diff --git a/CitationAccuracyClassificationCode/multivers/model.py b/CitationAccuracyClassificationCode/multivers/model.py
+index 7fa1152b7..f1d000327 100644
+--- a/CitationAccuracyClassificationCode/multivers/model.py
++++ b/CitationAccuracyClassificationCode/multivers/model.py
+@@ -12,10 +12,10 @@ from transformers.optimization import get_linear_schedule_with_warmup
+ from pytorch_lightning.core.decorators import auto_move_data
+ import numpy as np
+ from transformers import AutoTokenizer
+-from bertviz import head_view
++# from bertviz import head_view  # unused; not needed for train/predict
+ 
+ from transformers import LongformerModel
+-from focal_loss.focal_loss import FocalLoss
++# from focal_loss.focal_loss import FocalLoss  # unused; PyPI focal-loss is TF-only
+ from allennlp_nn_util import batched_index_select
+ from allennlp_feedforward import FeedForward
+ from metrics import SciFactMetrics
+@@ -154,7 +154,7 @@ class MultiVerSModel(pl.LightningModule):
+ 			starting_encoder_name,
+ 			gradient_checkpointing=hparams.gradient_checkpointing,
+ 			output_attentions = True)
+-		
++
+ 		orig_state_dict = encoder.state_dict()
+ 		checkpoint_prefixed = torch.load(util.get_longformer_science_checkpoint())
+ 

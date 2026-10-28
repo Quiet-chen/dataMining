@@ -1,0 +1,24 @@
+# Model weights: distribute via CHECKPOINTS.md, not Git
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+checkpoints_user/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Local environment
+.env
+.env.*
+.venv/
+venv/
+
+# Logs / training outputs
+*.log
+lightning_logs/
+output.txt

@@ -1,0 +1,60 @@
+{
+  "num_docs": 8515,
+  "splits": {
+    "train": {
+      "num_claims": 2141,
+      "num_claim_doc_pairs": 197418,
+      "fine_label_counts": {
+        "ACCURATE": 3228,
+        "CONTRADICT": 127,
+        "NOT_SUBSTANTIATE": 514,
+        "INDIRECT_NOT_REVIEW": 49,
+        "OVERSIMPLIFY": 201,
+        "MISQUOTE": 52,
+        "ETIQUETTE": 8,
+        "INDIRECT": 80,
+        "IRRELEVANT": 2
+      },
+      "collapsed_label_counts": {
+        "ACCURATE": 3357,
+        "NOT_ACCURATE": 902
+      }
+    },
+    "dev": {
+      "num_claims": 316,
+      "num_claim_doc_pairs": 24797,
+      "fine_label_counts": {
+        "ACCURATE": 462,
+        "NOT_SUBSTANTIATE": 57,
+        "MISQUOTE": 16,
+        "CONTRADICT": 40,
+        "OVERSIMPLIFY": 17,
+        "ETIQUETTE": 8,
+        "INDIRECT": 19
+      },
+      "collapsed_label_counts": {
+        "ACCURATE": 481,
+        "NOT_ACCURATE": 138
+      }
+    },
+    "test": {
+      "num_claims": 606,
+      "num_claim_doc_pairs": 41607,
+      "fine_label_counts": {
+        "ETIQUETTE": 8,
+        "OVERSIMPLIFY": 106,
+        "ACCURATE": 1001,
+        "IRRELEVANT": 1,
+        "MISQUOTE": 24,
+        "NOT_SUBSTANTIATE": 55,
+        "INDIRECT": 17,
+        "INDIRECT_NOT_REVIEW": 17,
+        "CONTRADICT": 25
+      },
+      "collapsed_label_counts": {
+        "NOT_ACCURATE": 218,
+        "ACCURATE": 1035
+      }
+    }
+  }
+}
